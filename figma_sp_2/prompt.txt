@@ -1,0 +1,1 @@
+I need you to clone all the component and design present in the Figma Design Image, Use HTML, CSS and JS, Make Sure to clone the exact design. Don't show your creativity, make it exact. Do Not Miss align element from the image. All the color and design elements should be same like pixel size of every component.

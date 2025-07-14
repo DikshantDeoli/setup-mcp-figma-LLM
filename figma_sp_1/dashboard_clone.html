@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xoriant Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: #f8f9fa;
+            padding: 20px 0;
+            border-right: 1px solid #e0e0e0;
+        }
+
+        .logo {
+            padding: 0 20px 30px 20px;
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .logo::before {
+            content: '';
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #00c851 0%, #007e33 100%);
+            margin-right: 10px;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: #666;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            margin: 2px 10px;
+        }
+
+        .menu-item:hover {
+            background-color: #e9ecef;
+            color: #333;
+        }
+
+        .menu-item.active {
+            background-color: #333;
+            color: white;
+        }
+
+        .menu-item::before {
+            content: '';
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .menu-item[data-icon="dashboard"]::before {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>');
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            background-color: #f8f9fa;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .notification-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #ffc107;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4285f4, #34a853);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .stat-card.server-support::before {
+            background-color: #6c5ce7;
+        }
+
+        .stat-card.active-users::before {
+            background-color: #fdcb6e;
+        }
+
+        .stat-card.team-list::before {
+            background-color: #fd79a8;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-card.server-support .stat-number {
+            color: #6c5ce7;
+        }
+
+        .stat-card.active-users .stat-number {
+            color: #fdcb6e;
+        }
+
+        .stat-card.team-list .stat-number {
+            color: #fd79a8;
+        }
+
+        .stat-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .stat-subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .stat-avatars {
+            display: flex;
+            gap: -5px;
+            margin-bottom: 10px;
+        }
+
+        .stat-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid white;
+            margin-left: -5px;
+        }
+
+        .stat-avatar:first-child {
+            margin-left: 0;
+        }
+
+        .stat-avatar:nth-child(1) { background-color: #4285f4; }
+        .stat-avatar:nth-child(2) { background-color: #34a853; }
+        .stat-avatar:nth-child(3) { background-color: #ea4335; }
+
+        .read-more {
+            background-color: #f8f9fa;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        /* Main Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        /* Clients Table */
+        .clients-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .clients-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .clients-table th,
+        .clients-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .clients-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .clients-table td {
+            font-size: 14px;
+        }
+
+        .client-name {
+            color: #999;
+        }
+
+        .client-email {
+            color: #999;
+        }
+
+        .status-active {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .action-button {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 10px;
+            font-size: 12px;
+        }
+
+        .action-icons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-icon {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            opacity: 0.6;
+        }
+
+        .action-icon:hover {
+            opacity: 1;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .pagination span {
+            padding: 8px 12px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .pagination span.active {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* Right Column */
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        /* Growth Chart */
+        .growth-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .chart-container {
+            height: 200px;
+            position: relative;
+            margin-top: 20px;
+        }
+
+        .chart-bars {
+            display: flex;
+            align-items: end;
+            height: 100%;
+            gap: 20px;
+            padding: 0 10px;
+        }
+
+        .chart-bar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+        }
+
+        .bar-stack {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: end;
+            height: 100%;
+            gap: 2px;
+        }
+
+        .bar-segment {
+            width: 100%;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .bar-segment.green { background-color: #28a745; }
+        .bar-segment.blue { background-color: #007bff; }
+        .bar-segment.purple { background-color: #6c5ce7; }
+        .bar-segment.light-purple { background-color: #a29bfe; }
+
+        .chart-label {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .chart-y-axis {
+            position: absolute;
+            left: -10px;
+            top: 0;
+            bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Last Activity */
+        .activity-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .activity-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+            background-color: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .activity-text {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                XORIANT
+            </div>
+            <a href="#" class="menu-item active" data-icon="dashboard">Dashboard</a>
+            <a href="#" class="menu-item" data-icon="user">New Customer</a>
+            <a href="#" class="menu-item" data-icon="edit">Edit Customer</a>
+            <a href="#" class="menu-item" data-icon="delete">Delete Customer</a>
+            <a href="#" class="menu-item" data-icon="account">New Account</a>
+            <a href="#" class="menu-item" data-icon="edit">Edit Account</a>
+            <a href="#" class="menu-item" data-icon="delete">Delete Account</a>
+            <a href="#" class="menu-item" data-icon="deposit">Deposit</a>
+            <a href="#" class="menu-item" data-icon="withdraw">Withdrawal</a>
+            <a href="#" class="menu-item" data-icon="transfer">Fund transfer</a>
+            <a href="#" class="menu-item" data-icon="password">Change password</a>
+            <a href="#" class="menu-item" data-icon="balance">Balance Enquiry</a>
+            <a href="#" class="menu-item" data-icon="statement">Mini Statement</a>
+            <a href="#" class="menu-item" data-icon="statement">Customized Statement</a>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search" />
+                </div>
+                <div class="user-profile">
+                    <div class="notification-icon"></div>
+                    <div class="profile-avatar"></div>
+                </div>
+            </header>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card server-support">
+                    <div class="stat-number">27</div>
+                    <div class="stat-title">Server Support</div>
+                    <div class="stat-subtitle">Assigned client</div>
+                    <div class="stat-avatars">
+                        <div class="stat-avatar"></div>
+                        <div class="stat-avatar"></div>
+                        <div class="stat-avatar"></div>
+                    </div>
+                    <button class="read-more">Read More</button>
+                </div>
+                <div class="stat-card active-users">
+                    <div class="stat-number">18</div>
+                    <div class="stat-title">Active User List</div>
+                    <div class="stat-subtitle">Active client</div>
+                    <div class="stat-avatars">
+                        <div class="stat-avatar"></div>
+                        <div class="stat-avatar"></div>
+                        <div class="stat-avatar"></div>
+                    </div>
+                    <button class="read-more">Read More</button>
+                </div>
+                <div class="stat-card team-list">
+                    <div class="stat-number">15</div>
+                    <div class="stat-title">Team List</div>
+                    <div class="stat-subtitle">Team Member</div>
+                    <div class="stat-avatars">
+                        <div class="stat-avatar"></div>
+                        <div class="stat-avatar"></div>
+                        <div class="stat-avatar"></div>
+                    </div>
+                    <button class="read-more">Read More</button>
+                </div>
+            </div>
+
+            <!-- Main Grid -->
+            <div class="main-grid">
+                <!-- Clients Table -->
+                <div class="clients-section">
+                    <h2 class="section-title">List of Clients</h2>
+                    <table class="clients-table">
+                        <thead>
+                            <tr>
+                                <th>Sr No.</th>
+                                <th>Client Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Status</th>
+                                <th>Server</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>01</td>
+                                <td class="client-name">William benhamen</td>
+                                <td class="client-email">testclient@gmail.com</td>
+                                <td>+44 1234567</td>
+                                <td class="status-active">● Active</td>
+                                <td><a href="#" class="action-button">View</a> <a href="#" class="action-button">Add</a></td>
+                                <td>
+                                    <div class="action-icons">
+                                        <span class="action-icon">✏️</span>
+                                        <span class="action-icon">🗑️</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>02</td>
+                                <td class="client-name">charlotte Mia</td>
+                                <td class="client-email">democlient@gmail.com</td>
+                                <td>+44 1638567</td>
+                                <td class="status-active">● Active</td>
+                                <td><a href="#" class="action-button">View</a> <a href="#" class="action-button">Add</a></td>
+                                <td>
+                                    <div class="action-icons">
+                                        <span class="action-icon">✏️</span>
+                                        <span class="action-icon">🗑️</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>03</td>
+                                <td class="client-name">sophia Emily</td>
+                                <td class="client-email">testclient@gmail.com</td>
+                                <td>+44 1734867</td>
+                                <td class="status-active">● Active</td>
+                                <td><a href="#" class="action-button">View</a> <a href="#" class="action-button">Add</a></td>
+                                <td>
+                                    <div class="action-icons">
+                                        <span class="action-icon">✏️</span>
+                                        <span class="action-icon">🗑️</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>04</td>
+                                <td class="client-name">Belle gard</td>
+                                <td class="client-email">victimclient@gmail.com</td>
+                                <td>+44 1434867</td>
+                                <td class="status-active">● Active</td>
+                                <td><a href="#" class="action-button">View</a> <a href="#" class="action-button">Add</a></td>
+                                <td>
+                                    <div class="action-icons">
+                                        <span class="action-icon">✏️</span>
+                                        <span class="action-icon">🗑️</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="pagination">
+                        <span class="active">1</span>
+                        <span>2</span>
+                        <span>3</span>
+                        <span>4</span>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="right-column">
+                    <!-- Growth Chart -->
+                    <div class="growth-section">
+                        <h2 class="section-title">Growth Rate of Clients</h2>
+                        <div class="chart-container">
+                            <div class="chart-y-axis">
+                                <span>45k</span>
+                                <span>35k</span>
+                                <span>25k</span>
+                                <span>15k</span>
+                                <span>$0</span>
+                            </div>
+                            <div class="chart-bars">
+                                <div class="chart-bar">
+                                    <div class="bar-stack">
+                                        <div class="bar-segment green" style="height: 60px;"></div>
+                                        <div class="bar-segment blue" style="height: 40px;"></div>
+                                        <div class="bar-segment purple" style="height: 30px;"></div>
+                                        <div class="bar-segment light-purple" style="height: 20px;"></div>
+                                    </div>
+                                    <div class="chart-label">Jan</div>
+                                </div>
+                                <div class="chart-bar">
+                                    <div class="bar-stack">
+                                        <div class="bar-segment green" style="height: 50px;"></div>
+                                        <div class="bar-segment blue" style="height: 35px;"></div>
+                                        <div class="bar-segment purple" style="height: 25px;"></div>
+                                        <div class="bar-segment light-purple" style="height: 15px;"></div>
+                                    </div>
+                                    <div class="chart-label">Feb</div>
+                                </div>
+                                <div class="chart-bar">
+                                    <div class="bar-stack">
+                                        <div class="bar-segment green" style="height: 70px;"></div>
+                                        <div class="bar-segment blue" style="height: 45px;"></div>
+                                        <div class="bar-segment purple" style="height: 35px;"></div>
+                                        <div class="bar-segment light-purple" style="height: 25px;"></div>
+                                    </div>
+                                    <div class="chart-label">Mar</div>
+                                </div>
+                                <div class="chart-bar">
+                                    <div class="bar-stack">
+                                        <div class="bar-segment green" style="height: 80px;"></div>
+                                        <div class="bar-segment blue" style="height: 50px;"></div>
+                                        <div class="bar-segment purple" style="height: 40px;"></div>
+                                        <div class="bar-segment light-purple" style="height: 30px;"></div>
+                                    </div>
+                                    <div class="chart-label">Apr</div>
+                                </div>
+                                <div class="chart-bar">
+                                    <div class="bar-stack">
+                                        <div class="bar-segment green" style="height: 90px;"></div>
+                                        <div class="bar-segment blue" style="height: 55px;"></div>
+                                        <div class="bar-segment purple" style="height: 45px;"></div>
+                                        <div class="bar-segment light-purple" style="height: 35px;"></div>
+                                    </div>
+                                    <div class="chart-label">May</div>
+                                </div>
+                                <div class="chart-bar">
+                                    <div class="bar-stack">
+                                        <div class="bar-segment green" style="height: 55px;"></div>
+                                        <div class="bar-segment blue" style="height: 35px;"></div>
+                                        <div class="bar-segment purple" style="height: 25px;"></div>
+                                        <div class="bar-segment light-purple" style="height: 15px;"></div>
+                                    </div>
+                                    <div class="chart-label">Jun</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Last Activity -->
+                    <div class="activity-section">
+                        <h2 class="section-title">Last Activity</h2>
+                        <div class="activity-grid">
+                            <div class="activity-item">
+                                <div class="activity-icon">👤</div>
+                                <div class="activity-text">Withdrawal</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">👤</div>
+                                <div class="activity-text">Withdrawal</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">👤</div>
+                                <div class="activity-text">Deposit</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">👤</div>
+                                <div class="activity-text">Deposit</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">👤</div>
+                                <div class="activity-text">Fund Transfer</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">👤</div>
+                                <div class="activity-text">Fund Transfer</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Add interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            // Menu item clicks
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    menuItems.forEach(mi => mi.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Pagination clicks
+            const paginationItems = document.querySelectorAll('.pagination span');
+            paginationItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    paginationItems.forEach(pi => pi.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Read more button clicks
+            const readMoreButtons = document.querySelectorAll('.read-more');
+            readMoreButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    alert('Read more clicked!');
+                });
+            });
+
+            // Action button clicks
+            const actionButtons = document.querySelectorAll('.action-button');
+            actionButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    alert(this.textContent + ' clicked!');
+                });
+            });
+
+            // Action icon clicks
+            const actionIcons = document.querySelectorAll('.action-icon');
+            actionIcons.forEach(icon => {
+                icon.addEventListener('click', function() {
+                    const action = this.textContent === '✏️' ? 'Edit' : 'Delete';
+                    alert(action + ' clicked!');
+                });
+            });
+
+            // Search functionality
+            const searchInput = document.querySelector('.search-bar input');
+            searchInput.addEventListener('input', function() {
+                console.log('Searching for:', this.value);
+            });
+        });
+    </script>
+</body>
+</html>

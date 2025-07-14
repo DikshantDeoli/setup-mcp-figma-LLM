@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Customer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 20px;
+    }
+    h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .section {
+      margin-top: 30px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: normal;
+    }
+    input[type="text"],
+    select {
+      width: 300px;
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      margin-bottom: 10px;
+    }
+    input[type="checkbox"] {
+      margin-left: 5px;
+    }
+    .row {
+      display: flex;
+      gap: 10px;
+    }
+    .button-row {
+      margin-top: 20px;
+    }
+    button {
+      padding: 6px 12px;
+      background-color: #2faa3f;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .numbered-section {
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    .numbered-section span {
+      background-color: #007bff;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>New customer</h2>
+
+    <div class="section">
+      <div class="numbered-section"><span>1</span> Basic data</div>
+      <label for="name">Name: <span style="color:red">*</span></label>
+      <input type="text" id="name">
+
+      <label>Business ID: <span style="color:red">*</span></label>
+      <div class="row">
+        <input type="text">
+        <button style="width:100px;background:#2faa3f">Find data</button>
+      </div>
+
+      <label><input type="checkbox"> Private customer:</label>
+
+      <label>Customer code:</label>
+      <input type="text" value="10">
+
+      <label>Customer group:</label>
+      <select>
+        <option>Asiakasryhmä 1</option>
+      </select>
+
+      <label>Organization unit number:</label>
+      <input type="text">
+    </div>
+
+    <div class="section">
+      <div class="numbered-section"><span>2</span> Invoicing address</div>
+      <label>Address:</label>
+      <input type="text">
+      <input type="text">
+
+      <label>Postcode and city:</label>
+      <div class="row">
+        <input type="text">
+        <input type="text">
+      </div>
+
+      <label>Country:</label>
+      <select>
+        <option>FINLAND</option>
+      </select>
+
+      <label>E-mail invoicing address:</label>
+      <input type="text">
+    </div>
+
+    <div class="section">
+      <div class="numbered-section"><span>3</span> Office</div>
+      <label>Name:</label>
+      <input type="text">
+
+      <label>Address:</label>
+      <input type="text">
+
+      <label>Postcode and city:</label>
+      <div class="row">
+        <input type="text">
+        <input type="text">
+      </div>
+
+      <label>Country:</label>
+      <select>
+        <option>FINLAND</option>
+      </select>
+    </div>
+
+    <div class="section">
+      <div class="numbered-section"><span>4</span> E-invoicing data</div>
+      <label>E-invoice address:</label>
+      <input type="text">
+
+      <label>E-invoice operator:</label>
+      <select></select>
+
+      <label><input type="checkbox"> Skip checking of e-invoice address when saving data:</label>
+    </div>
+
+    <div class="button-row">
+      <button>Create customer</button>
+      <button>Create customer and invoice</button>
+    </div>
+  </div>
+</body>
+</html>
