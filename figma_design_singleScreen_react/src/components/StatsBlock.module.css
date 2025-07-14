@@ -1,0 +1,39 @@
+.statsBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 256px;
+  height: 254px;
+  border-radius: 50px;
+  background: #fff;
+  box-shadow: 1px 6px 12px 4px rgba(0, 0, 0, 0.25);
+  margin: 0 16px;
+  padding: 24px 0;
+}
+.statsImage {
+  width: 86px;
+  height: 93px;
+  object-fit: contain;
+  margin-bottom: 16px;
+}
+.statsTextBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.statsValue {
+  font-family: Inter, sans-serif;
+  font-weight: 500;
+  font-size: 40px;
+  color: #333;
+  margin-bottom: 8px;
+}
+.statsLabel {
+  font-family: Inter, sans-serif;
+  font-weight: 500;
+  font-size: 22px;
+  color: #555;
+  letter-spacing: 0.1em;
+  text-align: center;
+} 
