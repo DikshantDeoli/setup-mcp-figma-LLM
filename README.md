@@ -48,3 +48,9 @@ This guide walks you through one of the fastest ways to convert a Figma UI into 
    ```
 
 You're all set! Now you can use Cursor to automatically generate code from your Figma designs using the MCP protocol.
+
+## References: 
+https://composio.dev/blog/how-to-use-figma-mcp-with-claude-code-to-build-pixel-perfect-designs
+https://medium.com/@maheshguptha49/one-of-the-fastest-way-to-convert-the-figma-ui-to-code-using-mcp-protocol-b6ff484d1a1f
+https://github.com/GLips/Figma-Context-MCP
+
